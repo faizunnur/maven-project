@@ -1,25 +1,56 @@
-name: Java CI with Maven
+name: Java CI/CD with Maven
+
+# Run on push to main, PRs to main, and on new tags
 on:
   push:
-    branches: [ main ]
+    branches: [ "main" ]
+    tags:
+      - 'v*' # Run on tags like v1.0, v2.1.1, etc.
   pull_request:
-    branches: [ main ]
+    branches: [ "main" ]
   workflow_dispatch:
+
 jobs:
+  # The Build job remains the same
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: checkout Code
+      - name: Checkout Code
         uses: actions/checkout@v4
+
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
+
       - name: Build with Maven
         run: mvn -B package --file pom.xml
+
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: spring-boot-app
           path: target/*.jar
+
+  # NEW JOB: This job creates the GitHub Release
+  release:
+    runs-on: ubuntu-latest
+    # Only run this job if the 'build' job has successfully completed
+    needs: build
+    # Only run this job if the trigger was a tag push
+    if: startsWith(github.ref, 'refs/tags/')
+    
+    steps:
+      - name: Download JAR artifact from build job
+        uses: actions/download-artifact@v4
+        with:
+          name: spring-boot-app
+      
+      - name: Create GitHub Release and upload asset
+        uses: softprops/action-gh-release@v1
+        with:
+          files: '*.jar'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
