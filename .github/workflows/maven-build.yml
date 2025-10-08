@@ -1,6 +1,6 @@
 name: Java CI/CD with Maven
 
-# Controls when the workflow will run
+
 on:
   push:
     branches: [ "main" ]
@@ -10,16 +10,22 @@ on:
     branches: [ "main" ]
   workflow_dispatch:
 
-# Defines the permissions the workflow's token will have
 permissions:
-  contents: write # Needed for creating releases
-  issues: write   # Needed for creating issues
-
+  contents: write
+  issues: write
 jobs:
-  # Job 1: Continuous Integration (Build & Test)
+
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Cache Maven packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
       - name: Checkout Code
         uses: actions/checkout@v4
 
@@ -44,7 +50,7 @@ jobs:
           name: jacoco-report
           path: target/site/jacoco
 
-  # Job 2: Continuous Delivery (Create a Release)
+
   release:
     runs-on: ubuntu-latest
     needs: build
@@ -63,7 +69,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  # Job 3: Failure Notification (Create an Issue)
+
   issue-on-failure:
     runs-on: ubuntu-latest
     needs: build
