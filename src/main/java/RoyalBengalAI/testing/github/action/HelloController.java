@@ -8,6 +8,6 @@ public class HelloController {
 
     @GetMapping("/hello") // Correction 2: Moved this annotation to the method
     public String sayHello() {
-        return "Hello, CI/CD! The pipeline is working!";
+        return "Hello, CI/CD! The pipeline is working! "
     }
 }
