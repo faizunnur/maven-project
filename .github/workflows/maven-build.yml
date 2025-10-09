@@ -13,12 +13,14 @@ on:
 permissions:
   contents: write
   issues: write
+
+  
 jobs:
 
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Cache Maven packages
+      - name: Cache Maven packages #save cheche
         uses: actions/cache@v4
         with:
           path: ~/.m2/repository
@@ -26,7 +28,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
-      - name: Checkout Code
+      - name: Checkout Code #clone code
         uses: actions/checkout@v4
 
       - name: Set up JDK 17
@@ -35,7 +37,7 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Build with Maven
+      - name: Build with Maven #build our maven project
         run: mvn -B package --file pom.xml
 
       - name: Upload Application JAR
@@ -44,7 +46,7 @@ jobs:
           name: spring-boot-app
           path: target/*.jar
 
-      - name: Upload Code Coverage Report
+      - name: Upload Code Coverage Report # tell us code coverage
         uses: actions/upload-artifact@v4
         with:
           name: jacoco-report
@@ -69,8 +71,31 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+  build-and-push-docker-image:
+    runs-on: ubuntu-latest
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/')
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
-  issue-on-failure:
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.repository_owner }}/${{ github.ref_name }}
+
+  issue-on-failure: # create issue if build fails
     runs-on: ubuntu-latest
     needs: build
     if: failure() && github.event_name == 'push' && github.ref == 'refs/heads/main'
