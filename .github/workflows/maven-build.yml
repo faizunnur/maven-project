@@ -83,7 +83,7 @@ jobs:
       - name: Analyze with SonarCloud
         run: |
            mvn -B verify sonar:sonar \
-           -Dsonar.projectKey=faizunnur \
+           -Dsonar.projectKey=faizunnur_maven-project \
            -Dsonar.organization=faizunnur \
            -Dsonar.host.url=https://sonarcloud.io \
            -Dsonar.login=${{ secrets.SONAR_TOKEN }}
