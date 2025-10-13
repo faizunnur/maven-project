@@ -5,9 +5,8 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.5.6</version> <!-- Using a valid, recent Spring Boot version -->
-		<relativePath/> <!-- lookup parent from repository -->
-	</parent>
+		<version>3.5.6</version>
+		<relativePath/> </parent>
 	<groupId>RoyalBengalAI</groupId>
 	<artifactId>testing-github-action</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
@@ -39,9 +38,15 @@
 				<version>0.8.12</version>
 				<executions>
 					<execution>
+						<id>prepare-agent</id>
 						<goals>
 							<goal>prepare-agent</goal>
 						</goals>
+						<configuration>
+							<excludes>
+								<exclude>RoyalBengalAI/testing/github/action/TestingGithubActionApplication.class</exclude>
+							</excludes>
+						</configuration>
 					</execution>
 					<execution>
 						<id>report</id>
@@ -59,18 +64,11 @@
 							<rules>
 								<rule>
 									<element>CLASS</element>
-									<!-- This block excludes the main application class from the check -->
-									<exclusions>
-										<exclusion>RoyalBengalAI/testing/github/action/TestingGithubActionApplication.class</exclusion>
-									</exclusions>
 									<limits>
 										<limit>
 											<counter>LINE</counter>
-											<!-- Corrected the typo from COVEREDRATIO to COVERAGERATIO -->
 											<value>COVERAGERATIO</value>
-											<!-- Temporarily lowered to 50% to allow the build to pass -->
-											<minimum>0.50</minimum>
-										</limit>
+											<minimum>0.50</minimum> </limit>
 									</limits>
 								</rule>
 							</rules>
@@ -81,4 +79,3 @@
 		</plugins>
 	</build>
 </project>
-
