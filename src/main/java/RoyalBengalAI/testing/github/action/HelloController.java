@@ -19,6 +19,6 @@ public class HelloController {
         Item newItem = new Item("Test Item from Controller");
         itemRepository.save(newItem);
 
-        return "Hello, CI/CD! Saved a new item to the database.";
+        return "Hello, CI/CD! Saved a new item to the database.lol";
     }
 }

@@ -88,10 +88,12 @@ jobs:
       - name: Analyze with SonarCloud
         run: |
            mvn -B verify sonar:sonar \
+           -Dspring.data.mongodb.uri=mongodb://localhost:27017/testdb \
            -Dsonar.projectKey=faizunnur_maven-project \
            -Dsonar.organization=faizunnur \
            -Dsonar.host.url=https://sonarcloud.io \
            -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+
   check-database:
     runs-on: ubuntu-latest
     needs: build
