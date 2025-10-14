@@ -20,6 +20,11 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
+    services:
+      mongodb:
+        image: mongo:latest
+        ports:
+          - 27017:27017
     steps:
       - name: Cache Maven packages #save cheche
         uses: actions/cache@v4
@@ -39,7 +44,7 @@ jobs:
           distribution: 'temurin'
 
       - name: Build with Maven #build our maven project
-        run: mvn -B package --file pom.xml
+        run: mvn -B package --file pom.xml -Dspring.data.mongodb.uri=mongodb://localhost:27017/testdb
 
       - name: Upload Application JAR
         uses: actions/upload-artifact@v4
