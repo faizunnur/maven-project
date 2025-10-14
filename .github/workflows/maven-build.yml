@@ -112,7 +112,7 @@ jobs:
 
       - name: Run Database Check
         run: |
-          echo "Running the application to check database connection..."
+          echo "Running the application to check database connection...This is sample test"
 
   release:
     runs-on: ubuntu-latest
