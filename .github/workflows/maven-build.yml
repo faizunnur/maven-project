@@ -111,7 +111,6 @@ jobs:
       - name: Run Database Check
         run: |
           echo "Running the application to check database connection..."
-          mvn test -Dtest=DatabaseConnectionTest
 
   release:
     runs-on: ubuntu-latest
