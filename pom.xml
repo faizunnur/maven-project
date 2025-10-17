@@ -43,7 +43,6 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-
 		<dependency>
 			<groupId>org.testcontainers</groupId>
 			<artifactId>junit-jupiter</artifactId>
@@ -54,7 +53,7 @@
 			<artifactId>mongodb</artifactId>
 			<scope>test</scope>
 		</dependency>
-		</dependencies>
+	</dependencies>
 
 	<build>
 		<plugins>
