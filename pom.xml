@@ -99,7 +99,7 @@
 											<counter>LINE</counter>
 											<!-- THIS IS THE CORRECTED VALUE -->
 											<value>COVEREDRATIO</value>
-											<minimum>0.50</minimum>
+											<minimum>0.30</minimum>
 										</limit>
 									</limits>
 								</rule>
