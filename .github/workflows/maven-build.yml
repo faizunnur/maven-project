@@ -22,7 +22,6 @@ permissions:
 
 jobs:
   build:
-    if: github.event_name != 'push' || github.event.pull_request == null
     runs-on: ubuntu-latest
     services:
       mongodb:
