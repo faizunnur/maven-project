@@ -19,6 +19,6 @@ public class HelloController {
         Item newItem = new Item("Test Item from Controller");
         itemRepository.save(newItem);
 
-        return "Hello, CI/CD! Saved a new item to the database. \n Welcome to Royal Bengal AI. working on feature main branch. again checking feature branch";
+        return "Hello, CI/CD! Saved a new item to the database. \n Welcome to Royal Bengal AI. working on feature main branch. Now checking develop branch";
     }
 }
