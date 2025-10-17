@@ -6,7 +6,8 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>3.5.6</version>
-		<relativePath/> </parent>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
 	<groupId>RoyalBengalAI</groupId>
 	<artifactId>testing-github-action</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
@@ -96,7 +97,8 @@
 									<limits>
 										<limit>
 											<counter>LINE</counter>
-											<value>COVERAGERATIO</value>
+											<!-- THIS IS THE CORRECTED VALUE -->
+											<value>COVEREDRATIO</value>
 											<minimum>0.50</minimum>
 										</limit>
 									</limits>
@@ -109,3 +111,4 @@
 		</plugins>
 	</build>
 </project>
+
