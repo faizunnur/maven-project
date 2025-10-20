@@ -171,10 +171,11 @@ jobs:
 
   issue-on-failure:
     runs-on: ubuntu-latest
-    needs: build
-    if: failure() && github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [build, sonarqube_analysis, check-database, release, build-and-push-docker-image] 
+    if: failure() && github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
+    
     steps:
-      - name: Create GitHub Issue via API
+      - name: Create GitHub Issue on Failure
         run: |
           curl --request POST \
           --url "${{ github.api_url }}/repos/${{ github.repository }}/issues" \
@@ -183,9 +184,9 @@ jobs:
           --header "Content-Type: application/json" \
           --data @- <<EOF
           {
-            "title": "Build Failed on main branch",
-            "body": "The build for commit ${{ github.sha }} failed.\n- **Triggered by:** ${{ github.actor }}\n- **See the failed workflow run:** [Click Here](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})",
-            "labels": ["bug", "build-failure"],
+            "title": "🚨 Workflow Failure on ${{ github.ref_name }} branch",
+            "body": "A job in the workflow failed for commit `${{ github.sha }}`.\n\n- **Triggered by:** `${{ github.actor }}`\n- **Branch:** `${{ github.ref_name }}`\n- **See the failed workflow run:** [Click Here](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})\n\n### Job Statuses:\n- **Build:** `${{ needs.build.result }}`\n- **SonarQube Analysis:** `${{ needs.sonarqube_analysis.result }}`\n- **Database Check:** `${{ needs.check-database.result }}`\n- **Release:** `${{ needs.release.result }}`\n- **Docker Push:** `${{ needs.build-and-push-docker-image.result }}`",
+            "labels": ["bug", "build-failure", "ci-cd"],
             "assignees": ["${{ github.actor }}"]
           }
           EOF
