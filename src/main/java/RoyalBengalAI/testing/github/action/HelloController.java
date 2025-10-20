@@ -16,9 +16,9 @@ public class HelloController {
     @GetMapping("/hello")
     public String sayHello() {
         // Create a new item and save it to the database
-        Item newItem = new Item("Test Item from Controller")
+        Item newItem = new Item("Test Item from Controller");
         itemRepository.save(newItem);
 
-        return "Hello, CI/CD! Saved a new item to the database. \n Welcome to Royal Bengal AI. working on feature main branch. Now checking develop branch. amd merge it";
+        return "Hello, CI/CD! Saved a new item to the database. \n Welcome to Royal Bengal AI. working on feature main branch. Now checking develop branch. and merge it";
     }
 }
