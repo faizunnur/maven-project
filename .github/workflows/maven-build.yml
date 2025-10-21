@@ -23,6 +23,9 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java-version: [ '17' ]
     services:
       mongodb:
         image: mongo:latest
@@ -102,8 +105,8 @@ jobs:
         run: |
            mvn -B verify sonar:sonar \
            -Dspring.data.mongodb.uri=mongodb://localhost:27017/testdb \
-           -Dsonar.projectKey=faizunnur_maven-project \
-           -Dsonar.organization=faizunnur \
+           -Dsonar.projectKey=${{ vars.sonar_project_key }} \
+           -Dsonar.organization=${{ vars.SONAR_ORGANIZATION_KEY}} \
            -Dsonar.host.url=https://sonarcloud.io \
            -Dsonar.login=${{ secrets.SONAR_TOKEN }}
 
