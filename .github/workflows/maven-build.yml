@@ -173,7 +173,7 @@ jobs:
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:${{ github.ref_name }}
   deploy-to-aws:
     runs-on: ubuntu-latest
-    needs: build
+    needs: [ build, build-and-push-docker-image ]
     if: startsWith(github.ref, 'refs/tags/') # Only runs on a release tag
 
     steps:
@@ -201,31 +201,24 @@ jobs:
           docker push $ECR_REGISTRY/${{ vars.ECR_REPOSITORY }}:$IMAGE_TAG
           echo "image=$ECR_REGISTRY/${{ vars.ECR_REPOSITORY }}:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
-      # --- Correction Area ---
-      - name: Download existing task definition
-        run: |
-          aws ecs describe-task-definition --task-definition ${{ vars.ECS_TASK_DEFINITION_FAMILY }} \
-          --query taskDefinition > task-definition.json
-
-      - name: Update ECS Task Definition file
-        id: update-task-def-file
+      - name: Update ECS Task Definition
+        id: update-task-def
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
-          # Use the downloaded file as the base
-          task-definition: task-definition.json
+          task-definition-family: ${{ vars.ECS_TASK_DEFINITION_FAMILY }}
           container-name: ${{ vars.CONTAINER_NAME }}
           image: ${{ steps.build-image.outputs.image }}
-      # --- End Correction Area ---
 
       - name: Deploy new task definition to ECS Service
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
         with:
-          # Use the output file path from the render step
-          task-definition: ${{ steps.update-task-def-file.outputs.task-definition }}
+          # --- This is the corrected line ---
+          task-definition: ${{ steps.update-task-def.outputs.task-definition }}
+          # --- End of correction ---
           service: ${{ vars.ECS_SERVICE }}
           cluster: ${{ vars.ECS_CLUSTER }}
-          wait-for-service-stability: true
-          
+          wait-for-service-stability: true # Waits for the new version to be healthy
+
   issue-on-failure:
     runs-on: ubuntu-latest
     needs: [build, sonarqube_analysis, check-database] 
